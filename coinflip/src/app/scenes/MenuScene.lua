@@ -1,5 +1,5 @@
 
-local AdBar = import("..views.AdBar")
+--local AdBar = import("..views.AdBar")
 local BubbleButton = import("..views.BubbleButton")
 
 local MenuScene = class("MenuScene", function()
@@ -10,8 +10,8 @@ function MenuScene:ctor()
     self.bg = display.newSprite("lol2.png", display.cx, display.cy)
     self:addChild(self.bg)
 
-    self.adBar = AdBar.new()
-    self:addChild(self.adBar)
+    --self.adBar = AdBar.new()
+    --self:addChild(self.adBar)
 
     self.moreGamesButton = BubbleButton.new({
             image = "lol4.png",

@@ -1,24 +1,24 @@
 
 local Levels = import("..data.Levels")
 local Board = import("..views.MyBoard")
-local AdBar = import("..views.AdBar")
+--local AdBar = import("..views.AdBar")
 
 local PlayLevelScene = class("PlayLevelScene", function()
     return display.newScene("PlayLevelScene")
 end)
 
 function PlayLevelScene:ctor(levelIndex)
-    local bg = display.newSprite("#PlayLevelSceneBg.png")
+    local bg = display.newSprite("xikong1.png")
     -- make background sprite always align top
     bg:setPosition(display.cx, display.top - bg:getContentSize().height / 2)
     self:addChild(bg)
 
-    local title = display.newSprite("#Title.png", display.left + 150, display.top - 50)
-    title:setScale(0.5)
-    self:addChild(title)
+    -- local title = display.newSprite("#Title.png", display.left + 150, display.top - 50)
+    -- title:setScale(0.5)
+    -- self:addChild(title)
 
-    local adBar = AdBar.new()
-    self:addChild(adBar)
+    --local adBar = AdBar.new()
+    --self:addChild(adBar)
 
     local label = cc.ui.UILabel.new({
         UILabelType = 1,
@@ -34,7 +34,7 @@ function PlayLevelScene:ctor(levelIndex)
     self.board:addEventListener("LEVEL_COMPLETED", handler(self, self.onLevelCompleted))
     self:addChild(self.board)
 
-    cc.ui.UIPushButton.new({normal = "#BackButton.png", pressed = "#BackButtonSelected.png"})
+    cc.ui.UIPushButton.new({normal = "anniu.png", pressed = "anniu.png"})
         :align(display.CENTER, display.right - 100, display.bottom + 120)
         :onButtonClicked(function()
             app:enterChooseLevelScene()

@@ -13,7 +13,8 @@ local COIN_ZORDER    = 1000
 function Board:ctor(levelData)
     cc.GameObject.extend(self):addComponent("components.behavior.EventProtocol"):exportMethods()
 
-    self.batch = display.newBatchNode(GAME_TEXTURE_IMAGE_FILENAME)
+    --self.batch = display.newBatchNode(GAME_TEXTURE_IMAGE_FILENAME)
+    self.batch = display.newNode()
     self.batch:setPosition(display.cx, display.cy)
     self:addChild(self.batch)
 

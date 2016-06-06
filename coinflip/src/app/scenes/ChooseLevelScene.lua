@@ -1,5 +1,5 @@
 
-local AdBar = import("..views.AdBar")
+--local AdBar = import("..views.AdBar")
 local LevelsList = import("..views.LevelsList")
 
 local ChooseLevelScene = class("ChooseLevelScene", function()
@@ -7,7 +7,7 @@ local ChooseLevelScene = class("ChooseLevelScene", function()
 end)
 
 function ChooseLevelScene:ctor()
-    local bg = display.newSprite("#OtherSceneBg.png")
+    local bg = display.newSprite("xikong1.png")
     -- make background sprite always align top
     bg:setPosition(display.cx, display.top - bg:getContentSize().height / 2)
     self:addChild(bg)
@@ -15,8 +15,8 @@ function ChooseLevelScene:ctor()
     local title = display.newSprite("#Title.png", display.cx, display.top - 100)
     self:addChild(title)
 
-    local adBar = AdBar.new()
-    self:addChild(adBar)
+    --local adBar = AdBar.new()
+    --self:addChild(adBar)
 
     -- create levels list
     local rect = cc.rect(display.left, display.bottom + 180, display.width, display.height - 280)
@@ -24,7 +24,7 @@ function ChooseLevelScene:ctor()
     self.levelsList:addEventListener("onTapLevelIcon", handler(self, self.onTapLevelIcon))
     self:addChild(self.levelsList)
 
-    cc.ui.UIPushButton.new({normal = "#BackButton.png", pressed = "#BackButtonSelected.png"})
+    cc.ui.UIPushButton.new({normal = "anniu.png", pressed = "anniu.png"})
         :align(display.CENTER, display.right - 100, display.bottom + 120)
         :onButtonClicked(function()
             app:enterMenuScene()
