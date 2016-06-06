@@ -7,14 +7,14 @@ local MenuScene = class("MenuScene", function()
 end)
 
 function MenuScene:ctor()
-    self.bg = display.newSprite("#MenuSceneBg.png", display.cx, display.cy)
+    self.bg = display.newSprite("lol2.png", display.cx, display.cy)
     self:addChild(self.bg)
 
     self.adBar = AdBar.new()
     self:addChild(self.adBar)
 
     self.moreGamesButton = BubbleButton.new({
-            image = "#MenuSceneMoreGamesButton.png",
+            image = "lol4.png",
             sound = GAME_SFX.tapButton,
             prepare = function()
                 audio.playSound(GAME_SFX.tapButton)
@@ -28,7 +28,7 @@ function MenuScene:ctor()
         :addTo(self)
 
     self.startButton = BubbleButton.new({
-            image = "#MenuSceneStartButton.png",
+            image = "lol3.jpg",
             sound = GAME_SFX.tapButton,
             prepare = function()
                 audio.playSound(GAME_SFX.tapButton)

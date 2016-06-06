@@ -1,6 +1,5 @@
-
 local Levels = import("..data.Levels")
-local Coin   = import("..views.Coin")
+local Coin   = import("..views.Cell")
 
 local Board = class("Board", function()
     return display.newNode()
@@ -99,7 +98,7 @@ end
 function Board:onTouch(event, x, y)
     if event ~= "began" or self.flipAnimationCount > 0 then return end
 
-    local padding = NODE_PADDING / 2
+    --[[local padding = NODE_PADDING / 2
     for _, coin in ipairs(self.coins) do
         local cx, cy = coin:getPosition()
         cx = cx + display.cx
@@ -111,7 +110,7 @@ function Board:onTouch(event, x, y)
             self:flipCoin(coin, true)
             break
         end
-    end
+    end]]--
 end
 
 function Board:onEnter()
