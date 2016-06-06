@@ -12,8 +12,8 @@ function ChooseLevelScene:ctor()
     bg:setPosition(display.cx, display.top - bg:getContentSize().height / 2)
     self:addChild(bg)
 
-    local title = display.newSprite("#Title.png", display.cx, display.top - 100)
-    self:addChild(title)
+    -- local title = display.newSprite("#Title.png", display.cx, display.top - 100)
+    -- self:addChild(title)
 
     --local adBar = AdBar.new()
     --self:addChild(adBar)
