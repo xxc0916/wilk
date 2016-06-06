@@ -1,5 +1,5 @@
 
-local Levels = import("..data.Levels")
+local Levels = import("..data.MyLevels")
 local Board = import("..views.MyBoard")
 --local AdBar = import("..views.AdBar")
 
