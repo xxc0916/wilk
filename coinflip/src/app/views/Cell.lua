@@ -1,12 +1,23 @@
 local Levels = import("..data.MyLevels")
+local ourCellsName = {
+    {"#lushi1.png"},
+    {"#lushi2.png"},
+    {"#lushi3.png"},
+    {"#lushi4.png"},
+    {"#lushi5.png"},
+    {"#lushi6.png"},
+    {"#lushi7.png"},
+    {"#lushi8.png"}
+}
+
 
 local Cell = class("Cell", function(nodeType)
     local index = 1
-    if nodeType == Levels.NODE_IS_BLACK then
-        index = 8
-    end
-    local sprite = display.newSprite(string.format("lushi%d.png", index))
-    sprite.isWhite = index == 1
+   -- if nodeType == Levels.NODE_IS_BLACK then
+        index =  math.floor(math.random(8))
+   --end
+    local sprite = display.newSprite(ourCellsName[index][1])
+    sprite.nodeType = index 
     return sprite
 end)
 
