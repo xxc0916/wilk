@@ -1,13 +1,13 @@
 local Levels = import("..data.MyLevels")
 local ourCellsName = {
-    {"#lushi1.png"},
-    {"#lushi2.png"},
-    {"#lushi3.png"},
-    {"#lushi4.png"},
-    {"#lushi5.png"},
-    {"#lushi6.png"},
-    {"#lushi7.png"},
-    {"#lushi8.png"}
+    {"#shui1.png"},
+    {"#shui2.png"},
+    {"#shui3.png"},
+    {"#shui4.png"},
+    {"#shui5.png"},
+    {"#shui6.png"},
+    {"#shui7.png"}
+    
 }
 
 
