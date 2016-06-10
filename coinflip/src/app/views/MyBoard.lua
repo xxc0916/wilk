@@ -235,6 +235,7 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
           if  isInAnimation  then
         local X1,Y1 = self.grid[row1][col1]:getPosition()
         local X2,Y2 = self.grid[row2][col2]:getPosition()
+    if row1 == row2 - 1 or  row1 == row2 + 1 or col1 == col2 - 1 or col1 == col2 + 1 then
         if callBack then
             self.grid[row1][col1]:runAction(transition.sequence({
                     cc.MoveTo:create(0.8, cc.p(X2,Y2)),
@@ -251,6 +252,8 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
             self:swap(row1,col1,row2,col2)
             
         end
+    end
+        self:swap(row1,col1,row2,col2)
     end
 end
 end
