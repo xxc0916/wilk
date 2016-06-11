@@ -222,7 +222,7 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
     end
     if self.grid[row1] and self.grid[row2][col2] then
         self.grid[row2][col2].row = row1
-        self.grid[row2][col2].col = col2
+        self.grid[row2][col2].col = col1
     end
     if self.grid[row1] == nil or self.grid[row2] == nil then 
         print("error")
@@ -235,7 +235,10 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
           if  isInAnimation  then
         local X1,Y1 = self.grid[row1][col1]:getPosition()
         local X2,Y2 = self.grid[row2][col2]:getPosition()
-    if row1 == row2 - 1 or  row1 == row2 + 1 or col1 == col2 - 1 or col1 == col2 + 1 then
+    if (row1 == row2 - 1 and col1 == col2)
+     or  (row1 == row2 + 1 and col1 == col2)
+      or (col1 == col2 - 1 and row1 == row2)
+       or (col1 == col2 + 1 and row1 == row2) then
         if callBack then
             self.grid[row1][col1]:runAction(transition.sequence({
                     cc.MoveTo:create(0.8, cc.p(X2,Y2)),
