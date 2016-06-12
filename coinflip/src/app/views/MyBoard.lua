@@ -7,10 +7,12 @@ local scheduler = cc.Director:getInstance():getScheduler()
 local Board = class("Board", function()
     return display.newNode()
 end)
-
+local isInAnimation = false
+local isInTouch = false
+local isEnableTouch = true
 local NODE_PADDING   = 100 * GAME_CELL_STAND_SCALE
 local NODE_ZORDER    = 0
-
+local SWAP_TIME = 0.6
 local COIN_ZORDER    = 1000
 
 function Board:ctor(levelData)
@@ -220,7 +222,7 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
         self.grid[row1][col1].row = row2
         self.grid[row1][col1].col = col2
     end
-    if self.grid[row1] and self.grid[row2][col2] then
+    if self.grid[row2] and self.grid[row2][col2] then
         self.grid[row2][col2].row = row1
         self.grid[row2][col2].col = col1
     end
@@ -228,24 +230,29 @@ function Board:swap(row1,col1,row2,col2,isInAnimation,callBack)
         print("error")
         return
     end
+    
     temp = self.grid[row1][col1] 
     self.grid[row1][col1] = self.grid[row2][col2]
     self.grid[row2][col2] = temp
      if  isInAnimation ~= nil then
+        isEnableTouch = true 
           if  isInAnimation  then
-        local X1,Y1 = self.grid[row1][col1]:getPosition()
-        local X2,Y2 = self.grid[row2][col2]:getPosition()
+       local X2,Y2 = col1 * NODE_PADDING + self.offsetX , row1  * NODE_PADDING + self.offsetY
+        local X1,Y1 = col2 * NODE_PADDING + self.offsetX , row2  * NODE_PADDING + self.offsetY
     if (row1 == row2 - 1 and col1 == col2)
      or  (row1 == row2 + 1 and col1 == col2)
       or (col1 == col2 - 1 and row1 == row2)
        or (col1 == col2 + 1 and row1 == row2) then
         if callBack then
+
             self.grid[row1][col1]:runAction(transition.sequence({
                     cc.MoveTo:create(0.8, cc.p(X2,Y2)),
                     cc.CallFunc:create(function()
+
                         self:swap(row1,col1,row2,col2)
+
                         callBack()
-                          
+                         
                     end)
                 }))
             self.grid[row2][col2]:runAction(cc.MoveTo:create(0.8, cc.p(X1,Y1)))
@@ -352,28 +359,110 @@ function Board:checkCell(cell)
 end
 
 function Board:onTouch(event, x, y)
+    if not isEnableTouch then
+        return false
+    end
     if event == "began" then
         local row,col = self:getRandC(x, y)
         curSwapBeginRow = row
         curSwapBeginCol = col
-        print (row,col)
+        if curSwapBeginRow == -1 or curSwapBeginCol == -1 then
+            return false 
+        end
+        isInTouch = true
+        self.grid[curSwapBeginRow][curSwapBeginCol]:setLocalZOrder(CELL_ZORDER+1)
+        return true
     end
+    if isInTouch and (event == "moved" or event == "ended"  )then
+        local padding = NODE_PADDING / 2
+        local cell_center = self.grid[curSwapBeginRow][curSwapBeginCol]
+        local cx, cy = cell_center:getPosition()
+        cx = cx + display.cx
+        cy = cy + display.cy
+        --锚点归位
+        local AnchBack = function()
+            isInTouch = false
+            local p_a = cell_center:getAnchorPoint()
+            local x_a = (0.5 - p_a.x ) *  NODE_PADDING + curSwapBeginCol * NODE_PADDING + self.offsetX
+            local y_a = (0.5 - p_a.y) *  NODE_PADDING + curSwapBeginRow * NODE_PADDING + self.offsetY
+            cell_center:setAnchorPoint(cc.p(0.5,0.5))
+            cell_center:setPosition(cc.p(x_a  , y_a ))
+        end
+        --动画回到格子定义点
+        local AnimBack = function()
+            isEnableTouch = false
+                cell_center:runAction(
+                    transition.sequence({
+                    cc.MoveTo:create(SWAP_TIME/2,cc.p(curSwapBeginCol * NODE_PADDING + self.offsetX,curSwapBeginRow * NODE_PADDING + self.offsetY)),
+                    cc.CallFunc:create(function()
+                          isEnableTouch = true
+                    end)
+                }))
+            cell_center:runAction(cc.ScaleTo:create(SWAP_TIME/2,CELL_SCALE))
+            self.grid[curSwapBeginRow][curSwapBeginCol]:setLocalZOrder(CELL_ZORDER)
+        end
+        if event == "ended" then
+            AnchBack()
+            AnimBack()
+            return
+        end
 
-    if event == "ended" then
-        local row,col = self:getRandC(x, y)
-        print (row,col)
-        self:swap(curSwapBeginRow,curSwapBeginCol,row,col,true,
-            function()
-                if self:checkAll() then
-                self:changeSingedCell(true)
-                end
+        if x < cx - 2*padding
+            or x > cx + 2*padding
+            or y < cy - 2*padding
+            or y > cy + 2*padding then
+            isInTouch = false
+            AnchBack()
+            local row,col = self:getRandC(x, y)
+            --进入十字框以内
+            if ((x >= cx - padding
+            and x <= cx + padding)
+            or (y >= cy - padding
+            and y <= cy + padding) )and (row ~= -1 and col ~= -1)  then
+                --防止移动超过一格的情况
+                if row - curSwapBeginRow > 1 then row = curSwapBeginRow + 1 end
+                if curSwapBeginRow - row > 1 then row = curSwapBeginRow - 1 end
+                if col -  curSwapBeginCol > 1 then col = curSwapBeginCol + 1 end
+                if curSwapBeginCol - col  > 1 then col = curSwapBeginCol - 1 end
+                    self:swap(row,col,curSwapBeginRow,curSwapBeginCol,function()
+                        -- if START_TAG then
+                        --     step = step + 1
+                        --     GAME_STEP = GAME_STEP + 1
+                        -- end
+                        self:checkCell(self.grid[row][col])
+                        self:checkCell(self.grid[curSwapBeginRow][curSwapBeginCol])
+                        if self:checkNotClean() then
+                            -- WAIT_TIME = 0
+                            -- self:changeSingedCell(true)
+                        else
+                            self:swap(row,col,curSwapBeginRow,curSwapBeginCol,function()
+                                isEnableTouch = true
+                            end,0.5)
+                        end
+                    end
+                    )
+                cell_center:runAction(cc.ScaleTo:create(SWAP_TIME/2,CELL_SCALE))
+            else
+                AnimBack()
+                return
             end
-        )
+        else
+            x_vec = (cx - x)/ NODE_PADDING * 0.3 + 0.5
+            y_vec = (cy - y)/ NODE_PADDING * 0.3 + 0.5
+            cell_center:setAnchorPoint(cc.p(x_vec,y_vec))
+        end
     end
-    
-    return true
 end
-
+function Board:checkNotClean()
+    for i,v in pairs (self.cells) do
+        if v.isNeedClean  then
+            isEnableTouch = false
+            return true
+        end
+    end
+    isEnableTouch = true
+    return false
+end
 function Board:getRandC(x,y)
     local padding = NODE_PADDING / 2
     for _, cell in ipairs(self.cells) do
